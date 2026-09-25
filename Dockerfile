@@ -1,0 +1,29 @@
+# 1. استخدام بيئة Node.js لبناء التطبيق
+FROM node:18-alpine AS build
+
+# تحديد مجلد العمل داخل الـ Container
+WORKDIR /app
+
+# نسخ ملفات الـ package.json لتثبيت الـ Dependencies
+COPY package*.json ./
+
+# تثبيت الحزم والمكتبات
+RUN npm install
+
+# نسخ باقي ملفات المشروع
+COPY . .
+
+# بناء التطبيق للتجهيز للـ Production
+RUN npm run build
+
+# 2. استخدام Nginx خفيف كـ Web Server لتشغيل الـ Static Files الناتج
+FROM nginx:alpine
+
+# نسخ الـ Static Files الناتجة من مرحلة الـ Build إلى مجلد Nginx
+COPY --from=build /app/build /usr/share/nginx/html
+
+# فتح البورت 80 للـ Traffic
+EXPOSE 80
+ 
+# تشغيل Nginx في الخلفية
+CMD ["nginx", "-g", "daemon off;"]
