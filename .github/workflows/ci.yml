@@ -32,8 +32,8 @@ jobs:
            file: ./Dockerfile
            push: true
            tags:
-             ${{ secrets.DOCKERHUB_USERNAME }}bassanty1/reactapp:latest
-             ${{ secrets.DOCKERHUB_USERNAME }}bassanty1/reactapp:${{ github.sha }}
+             ${{ secrets.DOCKERHUB_USERNAME }}bassanty/reactapp:latest
+             ${{ secrets.DOCKERHUB_USERNAME }}bassanty/reactapp:${{ github.sha }}
 
 
                  
