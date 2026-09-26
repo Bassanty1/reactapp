@@ -1,5 +1,6 @@
 name: Build and Push Docker Image
 
+# متى يتم تشغيل الـ Pipeline؟
 on:
   push:
     branches: ["main"]
@@ -8,29 +9,33 @@ on:
     
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # السيرفر الافتراضي الذي سيعمل عليه البايب لاين
 
 
     steps:
+      # 1. سحب الكود من GitHub      
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-
+      # 2. تسجيل الدخول إلى Docker Hub باستخدام الـ Secrets
       - name: Log in Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+      # 3. إعداد Docker Buildx (لتحسين السرعة والـ Caching)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # 4. بناء الـ Image ورفعها لـ Docker Hub
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
            context: .
            file: ./Dockerfile
            push: true
+
+          # استبدل YOUR_DOCKERHUB_USERNAME باسم حسابك على DockerHub
            tags: |
              bassanty/reactapp:latest
              bassanty/reactapp:${{ github.sha }}
